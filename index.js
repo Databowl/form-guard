@@ -40,7 +40,7 @@ const scanWebsite = async (url) => {
     // Check for form elements
     const forms = await page.$$eval('form', (forms) => forms.length);
     let hasVerification = false;
-    let detectedPixels = [];
+    // let detectedPixels = [];
 
     if (forms > 0) {
         hasVerification = await page.evaluate(() => {
@@ -74,7 +74,27 @@ const scanWebsite = async (url) => {
         'googletagmanager.com', 'google-analytics.com', 'criteo.com', 'bing.com', 'taboola.com',
         'outbrain.com', 'facebook.com', 'twitter.com', 'linkedin.com', 'snapchat.com'
     ];
-    detectedPixels = scripts.filter(src => knownPixels.some(pixel => src.includes(pixel)) || src.includes("pixel"));
+
+    // Check for known pixels, "pixel" in URL, and common tracking patterns
+    let detectedPixels = scripts.filter(src => 
+        knownPixels.some(pixel => src.includes(pixel)) || 
+        src.toLowerCase().includes("pixel") || 
+        /gtag\/js|fbevents\.js|tiktok\/pixel\.js|bing\/conversion.js/.test(src)
+    );
+
+   // Detect 1x1 tracking images
+    const trackingImages = await page.$$eval('img', imgs => 
+        imgs.filter(img => (img.width === 1 && img.height === 1)).map(img => img.src)
+    );
+
+       // Detect inline pixel scripts
+       const inlineScripts = await page.$$eval('script', scripts => 
+        scripts.map(script => script.innerText).filter(text => 
+            /track|pixel|analytics|conversion/i.test(text)
+        )
+    );
+
+    detectedPixels = [...new Set([...detectedPixels, ...trackingImages, ...inlineScripts])];
 
     await browser.close();
     
@@ -83,7 +103,7 @@ const scanWebsite = async (url) => {
     console.log(`Website: ${url}`);
     console.log(`Forms Found: ${forms}`);
     console.log(`Has Verification: ${hasVerification ? '✅ Yes' : '❌ No'}`);
-    console.log(`Affiliate Pixels Detected: ${detectedPixels.length > 0 ? detectedPixels.join(', ') : 'None'}`);
+    console.log(`Affiliate Pixels Detected: ${detectedPixels.length > 0 ? detectedPixels.join(', ') : 'None'}`); 
     console.log("=======================\n");
 };
 
