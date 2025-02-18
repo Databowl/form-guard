@@ -25,7 +25,7 @@ FormGuard is a web-based tool designed to scan websites for form verification me
    npm install
    ```
 
-## Configuration
+## Configuration (For a future feature of sending notifications to Slack)
 
 1. Create a `.env` file in the root directory and add:
    ```ini
