@@ -20,17 +20,9 @@ FormGuard is a web-based tool designed to scan websites for form verification me
 
 ## Installation
 
-1. **Clone the repository** or create a new folder and navigate into it:
+1. **Install required dependencies**:
    ```sh
-   mkdir formguard && cd formguard
-   ```
-2. **Initialize a new Node.js project**:
-   ```sh
-   npm init -y
-   ```
-3. **Install required dependencies**:
-   ```sh
-   npm install express puppeteer node-cron dotenv @slack/web-api
+   npm install
    ```
 
 ## Configuration
