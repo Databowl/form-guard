@@ -27,7 +27,7 @@ FormGuard is a web-based tool designed to scan websites for form verification me
 
 ## Configuration (For a future feature of sending notifications to Slack)
 
-1. Create a `.env` file in the root directory and add:
+1. Change .env.example to .env and set up your Slack token and channel variables. 
    ```ini
    SLACK_TOKEN=<your-slack-token>
    SLACK_CHANNEL=<your-slack-channel-id>
